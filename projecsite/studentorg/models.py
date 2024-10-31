@@ -32,6 +32,7 @@ class Student(BaseModel):
     student_id = models.CharField(max_length=15)
     lastname = models.CharField(max_length=25)
     firstname = models.CharField(max_length=25, blank=True, null=True)
+    middlename = models.CharField(max_length=25, blank=True, null=True)
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
     
     def __str__(self):
