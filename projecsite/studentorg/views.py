@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
-from studentorg.models import Organization, OrgMember
+from studentorg.models import Organization, OrgMember, College, Student
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from studentorg.forms import OrganizationForm, OrgMemberForm
+from studentorg.forms import OrganizationForm, OrgMemberForm, CollegeForm
 from django.urls import reverse_lazy
-from .models import OrgMember, Student
 
 
 # Create your views here.
@@ -75,6 +74,36 @@ class OrgMemberDeleteView(DeleteView):
     form_class = OrgMemberForm
     template_name = 'org_mem_delete.html'
     success_url = reverse_lazy('orgmember-list')
+
+
+class CollegeList(ListView):
+    model = College
+    template_name = 'college_list.html'
+    context_object_name = 'college'
+    success_url = reverse_lazy('college-list')
+    
+class CollegeAddView(CreateView):
+    model = College
+    form_class = CollegeForm
+    template_name = 'college_add.html'  
+    success_url = reverse_lazy('college-list')
+
+class CollegeUpdateView(UpdateView):
+    model = College
+    form_class = CollegeForm
+    template_name = 'college_edit.html'
+    success_url = reverse_lazy('college-list')
+
+class CollegeDeleteView(DeleteView):
+    model = College
+    form_class = CollegeForm
+    template_name = 'college_delete.html'
+    success_url = reverse_lazy('college-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['college'] = self.object
+        return context
 
 
 
