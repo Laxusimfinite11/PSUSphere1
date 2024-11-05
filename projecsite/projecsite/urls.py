@@ -16,8 +16,9 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from studentorg.views import HomePageView, OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView, OrgMemberList, OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView, CollegeList, CollegeAddView, CollegeUpdateView, CollegeDeleteView
-from django.urls import path
+from studentorg.views import HomePageView, OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView, OrgMemberList, OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView, CollegeList, CollegeAddView, CollegeUpdateView, CollegeDeleteView, StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView, ProgramList, ProgramAddView, ProgramUpdateView, ProgramDeleteview
+from django.urls import path, re_path
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -38,5 +39,18 @@ urlpatterns = [
     path('college_list/add', CollegeAddView.as_view(), name='college-add'),
     path('college_list/<pk>/', CollegeUpdateView.as_view(), name='college-update'),
     path('college_list/<pk>/delete', CollegeDeleteView.as_view(), name='college-delete'),
+
+    path('student_list', StudentList.as_view(), name='student-list'),
+    path('student_list/add', StudentCreateView.as_view(), name='student-add'),
+    path('student_list/<pk>/', StudentUpdateView.as_view(), name='student-update'),
+    path('student_list/<pk>/delete', StudentDeleteView.as_view(), name='student-delete'),
+
+    path('program_list', ProgramList.as_view(), name='program-list'),
+    path('program_list/add', ProgramAddView.as_view(), name='program-add'),
+    path('program_list/<pk>/', ProgramUpdateView.as_view(), name='program-update'),
+    path('program_list/<pk>/delete', ProgramDeleteview.as_view(), name='program-delete'),
+
+    re_path(r'^login/$', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    re_path(r'^logout/$', auth_views.LogoutView.as_view(template_name='login.html'), name='logout'),
 ]
 
