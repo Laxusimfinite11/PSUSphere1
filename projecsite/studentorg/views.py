@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic.list import ListView
 from studentorg.models import Organization, OrgMember, College, Student, Program
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -9,6 +9,7 @@ from django.db.models.query import QuerySet
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -17,6 +18,22 @@ class HomePageView(ListView):
     model = Organization
     context_object_name = 'home'
     template_name = "home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = self.request.user
+
+        if user.is_authenticated:
+            context['user_first_name'] = user.first_name
+            context['user_last_name'] = user.last_name
+            context['user_email'] = user.email
+        else:
+            context['user_first_name'] = ''
+            context['user_last_name'] = ''
+            context['user_email'] = ''
+
+        return context
 
 class OrganizationList(ListView):
     model = Organization
