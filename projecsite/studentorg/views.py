@@ -157,6 +157,7 @@ class StudentList(ListView):
         qs = super(StudentList, self).get_queryset(*args, **kwargs)
         if self.request.GET.get("q") is not None:
             query = self.request.GET.get('q')
+            print(query)
             qs = qs.filter(Q(student_id__icontains=query) | Q(firstname__icontains=query) | Q(lastname__icontains=query) | Q(middlename__icontains=query) | Q(program__college__college_name__icontains=query) | Q(program__prog_name__icontains=query))
         return qs
     
