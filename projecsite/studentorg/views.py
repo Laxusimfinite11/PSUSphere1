@@ -42,12 +42,11 @@ class OrganizationList(ListView):
     success_url = reverse_lazy('organization-list')
     paginate_by = 10
 
-    def get_query(self, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs):
         qs = super(OrganizationList, self).get_queryset(*args, **kwargs)
-        if  self.request.Get.get("q") != None:
+        if self.request.GET.get("q") is not None:
             query = self.request.GET.get('q')
-            qs = qs.filter(Q(name__icontains=query) | Q(descriptions__icontains=query))
-
+            qs = qs.filter(Q(name__icontains=query) | Q(description__icontains=query) | Q(college__college_name__icontains=query))
         return qs
 
 class OrganizationCreateView(CreateView):
@@ -73,8 +72,14 @@ class OrgMemberList(ListView):
     template_name = 'org_mem_list.html'
     context_object_name = 'org_members'
     success_url = reverse_lazy('orgmember-list')
-    
 
+    def get_queryset(self, *args, **kwargs):
+        qs = super(OrgMemberList, self).get_queryset(*args, **kwargs)
+        if self.request.GET.get("q") is not None:
+            query = self.request.GET.get('q')
+            qs = qs.filter(Q(student__firstname__icontains=query) | Q(student__lastname__icontains=query) | Q(student__middlename__icontains=query) | Q(organization__name__icontains=query) | Q(student__program__prog_name__icontains=query))
+        return qs
+    
     def get_queryset(self):
         queryset = super().get_queryset()
         
@@ -110,6 +115,13 @@ class CollegeList(ListView):
     template_name = 'college_list.html'
     context_object_name = 'college'
     success_url = reverse_lazy('college-list')
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super(CollegeList, self).get_queryset(*args, **kwargs)
+        if self.request.GET.get("q") is not None:
+            query = self.request.GET.get('q')
+            qs = qs.filter(Q(college_name__icontains=query))
+        return qs
     
 class CollegeAddView(CreateView):
     model = College
@@ -140,6 +152,13 @@ class StudentList(ListView):
         context = super().get_context_data(**kwargs)
         context['colleges'] = College.objects.all()
         return context
+    
+    def get_queryset(self, *args, **kwargs):
+        qs = super(StudentList, self).get_queryset(*args, **kwargs)
+        if self.request.GET.get("q") is not None:
+            query = self.request.GET.get('q')
+            qs = qs.filter(Q(student_id__icontains=query) | Q(firstname__icontains=query) | Q(lastname__icontains=query) | Q(middlename__icontains=query) | Q(program__college__college_name__icontains=query) | Q(program__prog_name__icontains=query))
+        return qs
     
 class StudentCreateView(CreateView):
     model = Student
